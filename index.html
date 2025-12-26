@@ -13,8 +13,8 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <!-- Progress bar for scroll -->
-  <div id="progress" aria-hidden="true"></div>
+  <!-- Scroll progress bar (updated to match requested id) -->
+  <div id="scroll-progress" aria-hidden="true"></div>
 
   <header class="topbar" role="banner">
     <div class="container nav-inner">
@@ -92,12 +92,12 @@
         <h2>Skills</h2>
         <p class="muted">숙련도 근거가 포함된 요약(간단 문장)</p>
         <div class="skill-filters">
-          <button class="skill-filter active" data-filter="all">All</button>
-          <button class="skill-filter" data-filter="analysis">Analysis</button>
-          <button class="skill-filter" data-filter="viz">Visualization</button>
-          <button class="skill-filter" data-filter="ml">ML</button>
-          <button class="skill-filter" data-filter="engineering">Data Eng</button>
-          <button class="skill-filter" data-filter="collab">Collab</button>
+          <button class="skill-filter skill-filter-btn active" data-filter="all">All</button>
+          <button class="skill-filter skill-filter-btn" data-filter="analysis">Analysis</button>
+          <button class="skill-filter skill-filter-btn" data-filter="viz">Visualization</button>
+          <button class="skill-filter skill-filter-btn" data-filter="ml">ML</button>
+          <button class="skill-filter skill-filter-btn" data-filter="engineering">Data Eng</button>
+          <button class="skill-filter skill-filter-btn" data-filter="collab">Collab</button>
         </div>
 
         <div class="skills-grid" id="skills-list">
@@ -140,7 +140,7 @@
         <p class="muted">문제 정의 → 접근 방식 → 결과 → 스택 — 모든 내용은 기본 상태에서 노출됩니다.</p>
         <div class="projects-grid">
           <!-- Project A -->
-          <article class="project full-card glass">
+          <article class="project full-card glass project-card">
             <h3>온라인 쇼핑몰 판매 데이터 분석</h3>
             <p class="project-field"><strong>Problem:</strong> 고객 세그먼트별 구매 행동이 달라 마케팅 효율이 낮음</p>
             <p class="project-field"><strong>Approach:</strong> 구매 로그/세션/상품 메타 데이터를 SQL로 집계하고 Python으로 세그먼트 정의, Tableau로 대시보드 제공</p>
@@ -150,7 +150,7 @@
           </article>
 
           <!-- Project B -->
-          <article class="project full-card glass">
+          <article class="project full-card glass project-card">
             <h3>영화 평점 데이터 분석</h3>
             <p class="project-field"><strong>Problem:</strong> 사용자 선호 기반 추천 정확도가 낮음</p>
             <p class="project-field"><strong>Approach:</strong> 사용자-영화 평점 데이터로 장르 선호도 분석 및 간단한 협업필터 기반 추천 인사이트 도출</p>
@@ -160,7 +160,7 @@
           </article>
 
           <!-- Project C (sample) -->
-          <article class="project full-card glass">
+          <article class="project full-card glass project-card">
             <h3>구독 서비스 이탈률 분석</h3>
             <p class="project-field"><strong>Problem:</strong> 월간 구독 이탈률(Churn)이 비즈니스 목표를 상회</p>
             <p class="project-field"><strong>Approach:</strong> 이용 패턴, 결제 정보, 고객지원 로그를 통합분석해 이탈 예측 인사이트 도출</p>
@@ -170,7 +170,7 @@
           </article>
 
           <!-- Project D (sample) -->
-          <article class="project full-card glass">
+          <article class="project full-card glass project-card">
             <h3>프로모션 A/B 테스트 분석</h3>
             <p class="project-field"><strong>Problem:</strong> 프로모션 효과가 유의미하지 않아 예산 낭비 우려</p>
             <p class="project-field"><strong>Approach:</strong> 실험군/대조군 설계, 가설 검정, 전환율과 평균 주문액(ARPU) 비교분석</p>

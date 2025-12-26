@@ -22,9 +22,10 @@
   back.addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'}));
 })();
 
-// Scroll progress bar
+// Scroll progress bar (uses #scroll-progress per design)
 (() => {
-  const progress = document.getElementById('progress');
+  const progress = document.getElementById('scroll-progress') || document.getElementById('progress');
+  if(!progress) return;
   window.addEventListener('scroll', ()=>{
     const h = document.documentElement;
     const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
