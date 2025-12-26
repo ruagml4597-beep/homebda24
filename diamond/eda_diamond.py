@@ -6,10 +6,19 @@
 """
 import os
 from pathlib import Path
-import pandas as pd
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
+
+# Import dependencies with a clear error message if missing
+try:
+    import pandas as pd
+    import numpy as np
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+except ModuleNotFoundError as e:
+    missing = getattr(e, 'name', str(e))
+    print(f"Error: required package '{missing}' is not installed.")
+    print("Install dependencies with:\n  python3 -m pip install pandas seaborn matplotlib numpy tabulate")
+    print("Or create and use the project's virtual environment:\n  python3 -m venv .venv && .venv/bin/python -m pip install -r diamond/requirements.txt")
+    raise
 
 # Paths
 ROOT = Path(__file__).resolve().parent
