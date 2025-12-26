@@ -98,7 +98,47 @@
   if(segCtx){
     const labels=['Top20','Mid50','Tail30'];
     const data=[48,37,15];
-    new Chart(segCtx,{type:'bar',data:{labels,datasets:[{label:'매출 비중',data,backgroundColor:['rgba(0,229,255,0.9)','rgba(155,124,255,0.8)','rgba(110,240,196,0.8)']} ]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.data[ctx.dataIndex]+'%'}}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v+'%'}}}});
+    new Chart(segCtx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: '매출 비중 (%)',
+        data,
+        backgroundColor: [
+          'rgba(0,229,255,0.95)',
+          'rgba(155,124,255,0.92)',
+          'rgba(110,240,196,0.92)'
+        ],
+        borderRadius: 6,
+        barPercentage: 0.6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const value = context.dataset.data[context.dataIndex];
+              return value + '%';
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) { return value + '%'; }
+          },
+          grid: { color: 'rgba(255,255,255,0.04)' }
+        }
+      }
+    }
+  });
   }
 
   // Funnel-like: horizontal bar
