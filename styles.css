@@ -31,6 +31,29 @@ body.light .btn.primary{box-shadow:0 6px 24px rgba(0,122,158,0.06);color:#fff}
 body.light .kpi-value{color:var(--neon)}
 body.light .project:hover{box-shadow:0 12px 28px rgba(0,122,158,0.08);border-color:rgba(0,122,158,0.06)}
 
+/* Light-mode specific card and text contrast adjustments */
+body.light .card,
+body.light .project-card,
+body.light .kpi-card{
+  background: rgba(255,255,255,0.96); /* near-white cards */
+  color: var(--text);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 30px rgba(2,6,23,0.04);
+}
+
+/* Buttons and badges */
+body.light .btn{border:1px solid rgba(0,0,0,0.06);color:var(--text)}
+body.light .btn.primary{background:linear-gradient(90deg,var(--neon),var(--accent));color:#fff}
+body.light .badge{background: rgba(0,122,158,0.08);color:var(--neon);box-shadow:none}
+
+/* Improve project field label contrast */
+body.light .project .project-field{color:var(--text)}
+body.light .project .project-field strong{color:var(--text);font-weight:700}
+
+/* Skill filter in light mode */
+body.light .skill-filter{border:1px solid rgba(0,0,0,0.06);color:var(--muted)}
+body.light .skill-filter.active{background:rgba(0,122,158,0.08);color:var(--neon)}
+
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
