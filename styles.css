@@ -250,8 +250,11 @@ body::before {
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  background: url('noise-texture.png'); /* 미세 노이즈 배경 */
-  opacity: 0.05;
+  /* Embedded SVG noise data URI to avoid external 404 */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='f'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23f)' opacity='0.06' fill='%23000'/></svg>");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  opacity: 0.06;
   pointer-events: none;
 }
 

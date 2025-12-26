@@ -86,67 +86,78 @@
 // Charts: Sales (line), Segment (bar), Funnel (horizontal bars as approximation)
 (() => {
   // Sales
-  const salesCtx = document.getElementById('salesChart')?.getContext('2d');
+  const salesEl = document.getElementById('salesChart');
+  const salesCtx = salesEl && salesEl.getContext && salesEl.getContext('2d');
   if(salesCtx){
     const labels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const salesData = [120,140,180,200,220,260,300,280,260,240,210,230];
-    new Chart(salesCtx, {type:'line',data:{labels,datasets:[{label:'월별 매출 (데모)',data:salesData,borderColor:'rgba(0,229,255,0.95)',backgroundColor:'rgba(0,229,255,0.08)',tension:0.3,pointRadius:3}]},options:{plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false}},scales:{y:{beginAtZero:false}}}});
+    new Chart(salesCtx, {
+      type:'line',
+      data:{labels,datasets:[{label:'월별 매출 (데모)',data:salesData,borderColor:'rgba(0,229,255,0.95)',backgroundColor:'rgba(0,229,255,0.08)',tension:0.3,pointRadius:3}]},
+      options:{plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false}},scales:{y:{beginAtZero:false}}}
+    });
   }
 
   // Segment bar
-  const segCtx = document.getElementById('segmentBar')?.getContext('2d');
+  const segEl = document.getElementById('segmentBar');
+  const segCtx = segEl && segEl.getContext && segEl.getContext('2d');
   if(segCtx){
     const labels=['Top20','Mid50','Tail30'];
     const data=[48,37,15];
     new Chart(segCtx, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        label: '매출 비중 (%)',
-        data,
-        backgroundColor: [
-          'rgba(0,229,255,0.95)',
-          'rgba(155,124,255,0.92)',
-          'rgba(110,240,196,0.92)'
-        ],
-        borderRadius: 6,
-        barPercentage: 0.6
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              const value = context.dataset.data[context.dataIndex];
-              return value + '%';
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: '매출 비중 (%)',
+          data,
+          backgroundColor: [
+            'rgba(0,229,255,0.95)',
+            'rgba(155,124,255,0.92)',
+            'rgba(110,240,196,0.92)'
+          ],
+          borderRadius: 6,
+          barPercentage: 0.6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                var value = context.dataset.data[context.dataIndex];
+                return value + '%';
+              }
             }
           }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            callback: function(value) { return value + '%'; }
-          },
-          grid: { color: 'rgba(255,255,255,0.04)' }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) { return value + '%'; }
+            },
+            grid: { color: 'rgba(255,255,255,0.04)' }
+          }
         }
       }
-    }
-  });
+    });
   }
 
   // Funnel-like: horizontal bar
-  const funnelCtx = document.getElementById('funnelChart')?.getContext('2d');
+  const funnelEl = document.getElementById('funnelChart');
+  const funnelCtx = funnelEl && funnelEl.getContext && funnelEl.getContext('2d');
   if(funnelCtx){
     const labels=['Visits','Add to Cart','Checkout','Purchase'];
     const data=[10000,1200,500,420];
-    new Chart(funnelCtx,{type:'bar',data:{labels,datasets:[{label:'Users',data,backgroundColor:'rgba(124,247,255,0.9)'}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.data[ctx.dataIndex]}}},scales:{x:{beginAtZero:true}}}});
+    new Chart(funnelCtx,{
+      type:'bar',
+      data:{labels,datasets:[{label:'Users',data,backgroundColor:'rgba(124,247,255,0.9)'}]},
+      options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return ctx.dataset.data[ctx.dataIndex];}}}},scales:{x:{beginAtZero:true}}}
+    });
   }
 })();
 
