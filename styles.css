@@ -4,10 +4,10 @@
   --neon: #00E5FF; /* primary neon */
   --accent: #9b7cff; /* purple accent */
   --mint: #6ef0c4;
-  --glass: rgba(255,255,255,0.04);
-  --glass-2: rgba(255,255,255,0.06);
-  --text:#e6f7ff;
-  --muted:#b6c6d6;
+  --glass: rgba(255,255,255,0.06);
+  --glass-2: rgba(255,255,255,0.08);
+  --text:#ffffff; /* stronger, high-contrast text */
+  --muted:#d0e6f0; /* slightly brighter muted text for contrast */
 }
 
 /* Light theme (user override) */
@@ -139,22 +139,22 @@ a:focus,button:focus,input:focus,textarea:focus{outline:2px dashed rgba(0,229,25
    (kept as overrides to integrate with the design system)
    =============================== */
 body {
-  color: #F0F0F0; /* 본문 글자색: 연한 흰색 */
+  color: var(--text); /* 본문 글자색: 높인 대비 */
   font-family: 'Roboto', 'Segoe UI', sans-serif;
   background: #0A0A0A; /* 다크 배경 */
   line-height: 1.6;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: #00E5FF; /* 제목/네온 포인트 컬러 */
+  color: var(--neon); /* 제목/네온 포인트 컬러 */
   font-weight: 700;
-  text-shadow: 0 0 4px #00E5FF, 0 0 8px #00E5FF; /* 네온 글로우 */
+  text-shadow: 0 0 6px var(--neon), 0 0 12px rgba(0,229,255,0.18); /* 네온 글로우 */
 }
 
 p, li, span {
-  color: #F0F0F0; /* 본문 */
-  text-shadow: 0 0 1px #00E5FF; /* 미세 글로우로 가독성 보정 */
-  font-weight: 500;
+  color: var(--text); /* 더 선명한 본문 색상 */
+  text-shadow: none; /* 글로우 제거로 가독성 향상 */
+  font-weight: 600; /* 약간 더 굵게 */
 }
 
 /* Glassmorphism cards */
