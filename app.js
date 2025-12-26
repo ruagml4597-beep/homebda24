@@ -1,22 +1,20 @@
-// 주요 인터랙티브 로직: 테마, 필터, 모달, 아코디언, 차트, 스크롤 애니메이션
-// 접근성 주석과 간단한 설명을 포함합니다.
-
-// Theme toggle: 시스템 설정을 기본으로 사용, 사용자가 선택하면 localStorage에 저장
+// Theme toggle (dark-first). 저장된 preference가 있으면 사용.
 (() => {
   const body = document.body;
   const toggle = document.getElementById('theme-toggle');
   const stored = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   if (stored === 'light') body.classList.add('light');
   else if (stored === 'dark') body.classList.remove('light');
-  else if (!prefersDark) body.classList.add('light');
+  // default: dark (no class)
 
   toggle.addEventListener('click', ()=>{
     const isLight = body.classList.toggle('light');
     localStorage.setItem('theme', isLight ? 'light' : 'dark');
   });
+})();
 
-  // Smooth show/hide back-to-top
+// Back to top visibility and action
+(() => {
   const back = document.getElementById('backToTop');
   window.addEventListener('scroll', ()=>{
     if(window.scrollY>400) back.style.display='block'; else back.style.display='none';
@@ -24,115 +22,96 @@
   back.addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'}));
 })();
 
-// Filters for project cards
+// Scroll progress bar
 (() => {
-  const buttons = document.querySelectorAll('.filter-btn');
-  const projects = document.querySelectorAll('.project-card');
-  buttons.forEach(btn=>btn.addEventListener('click', ()=>{
-    buttons.forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const f = btn.dataset.filter;
-    projects.forEach(p=>{
-      if(f==='all') p.style.display='block';
-      else {
-        const techs = p.dataset.tech.split(' ');
-        p.style.display = techs.includes(f) ? 'block' : 'none';
+  const progress = document.getElementById('progress');
+  window.addEventListener('scroll', ()=>{
+    const h = document.documentElement;
+    const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progress.style.width = pct + '%';
+  }, {passive:true});
+})();
+
+// Scrollspy: 현재 섹션 강조
+(() => {
+  const sections = document.querySelectorAll('section[data-section]');
+  const navLinks = document.querySelectorAll('.nav a');
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const id = entry.target.id;
+        navLinks.forEach(a=>a.classList.toggle('active', a.getAttribute('href') === '#'+id));
       }
     });
-  }));
+  },{threshold:0.45});
+  sections.forEach(s=>obs.observe(s));
 })();
 
-// Modal + project detail content (문장 구성: 문제 정의 → 접근 방식 → 핵심 결과 → 제안)
+// Skills filter: 강조 및 재정렬(모든 항목은 항상 노출됨)
 (() => {
-  const modal = document.getElementById('modal');
-  const modalContent = document.getElementById('modal-content');
-  const closeBtn = document.querySelector('.modal-close');
-  const detailBtns = document.querySelectorAll('.details-btn');
+  const buttons = document.querySelectorAll('.skill-filter');
+  const container = document.getElementById('skills-list');
+  const skills = Array.from(container.children);
+  function applyFilter(f){
+    document.querySelectorAll('.skill-filter').forEach(b=>b.classList.toggle('active', b.dataset.filter===f));
+    // emphasize matching, move matches to front
+    const matches = skills.filter(s=>f==='all' || s.dataset.skill===f);
+    const others = skills.filter(s=>!matches.includes(s));
+    // re-append in order
+    container.innerHTML = '';
+    matches.forEach(m=>{ m.classList.add('emphasize'); container.appendChild(m); });
+    others.forEach(o=>{ o.classList.remove('emphasize'); container.appendChild(o); });
+  }
+  buttons.forEach(b=>b.addEventListener('click', ()=>applyFilter(b.dataset.filter)));
+})();
 
-  // Project detail templates based on README.md content
-  const details = {
-    '온라인 쇼핑몰 판매 데이터 분석': {
-      goal: '고객 세그먼트 분석 및 상품 추천 전략 수립',
-      data: '판매 기록, 고객 구매 로그, 상품 메타데이터 (CSV/DB)',
-      method: 'SQL로 집계 후 Python(Pandas)으로 전처리, Tableau로 시각화 및 대시보드 제작',
-      results: 'VIP 고객층의 LTV가 높았고, 계절별 인기 상품 군이 명확히 나타남. 추천군 적용 시 전환율 개선 시뮬레이션 결과 +8% 예상',
-      recommend: 'VIP 대상 맞춤형 프로모션 집중, 계절성 인기상품에 따른 재고·마케팅 스케줄 조정 추천',
-      tech: 'Python, SQL, Excel, Tableau'
-    },
-    '영화 평점 데이터 분석': {
-      goal: '장르별 평점 분석 및 추천 인사이트 도출',
-      data: '영화 평점 데이터(사용자, 영화, 장르, 평점)',
-      method: 'Python으로 EDA, 장르별 통계 및 시각화, Tableau로 스토리보드화',
-      results: '특정 장르에서 높은 재시청률 발견, 추천 우선순위 조정 시 사용자 만족도 향상 기대',
-      recommend: '장르 기반 개인화 추천 알고리즘 우선 적용 및 콘텐츠 투자 우선순위 제안',
-      tech: 'Python, Tableau'
-    }
-  };
-
-  function openModal(title){
-    const d = details[title];
-    if(!d) return;
-    modalContent.innerHTML = `
-      <h3>${title}</h3>
-      <p><strong>Goal:</strong> ${d.goal}</p>
-      <p><strong>Data:</strong> ${d.data}</p>
-      <p><strong>Method:</strong> ${d.method}</p>
-      <p><strong>Results:</strong> ${d.results}</p>
-      <p><strong>Recommendation:</strong> ${d.recommend}</p>
-      <p><strong>Tech:</strong> ${d.tech}</p>
-      <hr />
-      <!-- Accordion: 분석과 인사이트 상세 -->
-      <div class="accordion">
-        <button class="acc-btn">분석 과정 (클릭하여 펼치기)</button>
-        <div class="acc-panel"><p>데이터 정합성 검사 → 결측/이상치 처리 → 피처 엔지니어링 → 시각화 및 KPI 도출</p></div>
-        <button class="acc-btn">인사이트 & 제안</button>
-        <div class="acc-panel"><p>주요 고객군 타겟팅, 프로모션 스케줄, 추천 로직 개선 등 실행 가능한 제안 포함</p></div>
-      </div>
-    `;
-    modal.setAttribute('aria-hidden','false');
+// Charts: Sales (line), Segment (bar), Funnel (horizontal bars as approximation)
+(() => {
+  // Sales
+  const salesCtx = document.getElementById('salesChart')?.getContext('2d');
+  if(salesCtx){
+    const labels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const salesData = [120,140,180,200,220,260,300,280,260,240,210,230];
+    new Chart(salesCtx, {type:'line',data:{labels,datasets:[{label:'월별 매출 (데모)',data:salesData,borderColor:'rgba(0,229,255,0.95)',backgroundColor:'rgba(0,229,255,0.08)',tension:0.3,pointRadius:3}]},options:{plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false}},scales:{y:{beginAtZero:false}}}});
   }
 
-  detailBtns.forEach((btn)=>{
-    btn.addEventListener('click', (e)=>{
-      const card = e.target.closest('.project-card');
-      const title = card.querySelector('h3').innerText.trim();
-      openModal(title);
-    });
-  });
+  // Segment bar
+  const segCtx = document.getElementById('segmentBar')?.getContext('2d');
+  if(segCtx){
+    const labels=['Top20','Mid50','Tail30'];
+    const data=[48,37,15];
+    new Chart(segCtx,{type:'bar',data:{labels,datasets:[{label:'매출 비중',data,backgroundColor:['rgba(0,229,255,0.9)','rgba(155,124,255,0.8)','rgba(110,240,196,0.8)']} ]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.data[ctx.dataIndex]+'%'}}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v+'%'}}}});
+  }
 
-  closeBtn.addEventListener('click', ()=>modal.setAttribute('aria-hidden','true'));
-  modal.addEventListener('click', (e)=>{ if(e.target===modal) modal.setAttribute('aria-hidden','true') });
-
-  // Accordion behavior
-  document.addEventListener('click', (e)=>{
-    if(e.target.classList.contains('acc-btn')){
-      const panel = e.target.nextElementSibling;
-      const open = panel.style.maxHeight;
-      document.querySelectorAll('.acc-panel').forEach(p=>p.style.maxHeight=null);
-      if(!open) panel.style.maxHeight = panel.scrollHeight + 'px';
-    }
-  });
+  // Funnel-like: horizontal bar
+  const funnelCtx = document.getElementById('funnelChart')?.getContext('2d');
+  if(funnelCtx){
+    const labels=['Visits','Add to Cart','Checkout','Purchase'];
+    const data=[10000,1200,500,420];
+    new Chart(funnelCtx,{type:'bar',data:{labels,datasets:[{label:'Users',data,backgroundColor:'rgba(124,247,255,0.9)'}]},options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.dataset.data[ctx.dataIndex]}}},scales:{x:{beginAtZero:true}}}});
+  }
 })();
 
-// Chart.js: 샘플 KPI 차트 (데모 데이터)
+// Form handling (front-end only) — 접근성: 상태 메시지, basic validation
 (() => {
-  const ctx = document.getElementById('salesChart').getContext('2d');
-  const labels = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
-  const data = {
-    labels,
-    datasets: [{
-      label: '월별 매출 (데모 데이터)',
-      data: [120,140,180,200,220,260,300,280,260,240,210,230],
-      borderColor: 'rgba(124,247,255,0.9)',
-      backgroundColor: 'rgba(124,247,255,0.12)',
-      tension: 0.3,
-      pointRadius:4
-    }]
-  };
-  const salesChart = new Chart(ctx, {type:'line',data,options:{responsive:true,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false}},scales:{y:{beginAtZero:false}}}});
+  const form = document.getElementById('contact-form');
+  const status = document.getElementById('form-status');
+  if(!form) return;
+  form.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    status.textContent='';
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const msg = form.message.value.trim();
+    if(!name || !email || !msg){ status.textContent='모든 필드를 입력해주세요.'; status.style.color='var(--accent)'; return; }
+    // Simulate send
+    status.textContent='메시지를 성공적으로 보냈습니다 (데모). 이메일로 회신 바랍니다.';
+    status.style.color='var(--neon)';
+    form.reset();
+  });
 })();
 
-// IntersectionObserver for reveal animations
+// IntersectionObserver for reveal animations (subtle)
 (() => {
   const obs = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
@@ -140,7 +119,6 @@
   document.querySelectorAll('.reveal, .card, .glass, .hero-card').forEach(el=>obs.observe(el));
 })();
 
-// Small: add reveal class to key elements on load
-window.addEventListener('load', ()=>{
-  document.querySelectorAll('.hero-card, .glass, .card').forEach(el=>el.classList.add('reveal'));
-});
+// add initial reveal
+window.addEventListener('load', ()=>document.querySelectorAll('.hero-card, .glass, .card').forEach(el=>el.classList.add('reveal')));
+
