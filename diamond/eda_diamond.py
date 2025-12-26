@@ -6,28 +6,10 @@
 """
 import os
 from pathlib import Path
-
-# Import dependencies with a clear error message if missing
-import importlib
-_requirements = {
-    'pd': 'pandas',
-    'np': 'numpy',
-    'sns': 'seaborn',
-    'plt': 'matplotlib.pyplot'
-}
-_missing = []
-for _alias, _pkg in _requirements.items():
-    try:
-        _module = importlib.import_module(_pkg)
-        globals()[_alias] = _module
-    except ModuleNotFoundError:
-        _missing.append(_pkg)
-if _missing:
-    print(f"Error: required package(s) not installed: {', '.join(_missing)}")
-    print("Install dependencies with:\n  python3 -m pip install " + " ".join(sorted(set(_missing))))
-    print("Or create and use the project's virtual environment:\n  python3 -m venv .venv && .venv/bin/python -m pip install -r diamond/requirements.txt")
-    raise ModuleNotFoundError(_missing[0])
-
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Paths
 ROOT = Path(__file__).resolve().parent
