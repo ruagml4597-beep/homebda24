@@ -1,15 +1,32 @@
-// Theme toggle (dark-first). 저장된 preference가 있으면 사용.
+// Theme toggle (dark-first). 저장된 preference가 있으면 사용. 개선: aria-pressed, icon, system-change listener
 (() => {
   const body = document.body;
   const toggle = document.getElementById('theme-toggle');
   const stored = localStorage.getItem('theme');
-  if (stored === 'light') body.classList.add('light');
-  else if (stored === 'dark') body.classList.remove('light');
-  // default: dark (no class)
+  const prefersDarkMQ = window.matchMedia('(prefers-color-scheme: dark)');
 
+  function applyTheme(theme){
+    if(theme === 'light') { body.classList.add('light'); toggle.innerText = '🌞'; toggle.setAttribute('aria-pressed','true'); }
+    else { body.classList.remove('light'); toggle.innerText = '🌙'; toggle.setAttribute('aria-pressed','false'); }
+  }
+
+  // Initialize: follow stored preference, otherwise system
+  if (stored === 'light' || stored === 'dark') applyTheme(stored);
+  else applyTheme(prefersDarkMQ.matches ? 'dark' : 'light');
+
+  // Toggle click
   toggle.addEventListener('click', ()=>{
     const isLight = body.classList.toggle('light');
-    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    const theme = isLight ? 'light' : 'dark';
+    applyTheme(theme);
+    localStorage.setItem('theme', theme);
+  });
+
+  // Listen to system preference changes if user hasn't explicitly chosen
+  prefersDarkMQ.addEventListener('change', (e)=>{
+    const stored = localStorage.getItem('theme');
+    if(stored) return; // do not override explicit choice
+    applyTheme(e.matches ? 'dark' : 'light');
   });
 })();
 

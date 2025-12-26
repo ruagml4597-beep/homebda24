@@ -12,8 +12,24 @@
 
 /* Light theme (user override) */
 body.light{
-  --bg-1:#f4f7fb;--bg-2:#eef4ff;--glass:rgba(255,255,255,0.7);--text:#06202a;--muted:#3b4a5a
+  --bg-1:#ffffff; /* white background */
+  --bg-2:#f6fbff; /* soft blue tint */
+  --neon: #007a9e; /* toned-down neon for light bg */
+  --accent: #6f52c9;
+  --mint: #2aa98f;
+  --glass: rgba(255,255,255,0.88); /* more opaque glass for light */
+  --glass-2: rgba(255,255,255,0.95);
+  --text:#071825; /* dark text */
+  --muted:#3b4a5a;
+  /* borders/shadows tuned for light mode */
+  --card-border: rgba(0,0,0,0.06);
 }
+
+/* Ensure elements that relied on dark-only styles adapt */
+body.light .brand, body.light .nav a{color:var(--text)}
+body.light .btn.primary{box-shadow:0 6px 24px rgba(0,122,158,0.06);color:#fff}
+body.light .kpi-value{color:var(--neon)}
+body.light .project:hover{box-shadow:0 12px 28px rgba(0,122,158,0.08);border-color:rgba(0,122,158,0.06)}
 
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
